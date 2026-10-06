@@ -72,8 +72,7 @@ public class SesionController {
         }
     }
     @GetMapping("/estado")
-    public ResponseEntity<List<Sesion>> buscarPorEstado(
-        @RequestParam String estado) {
+    public ResponseEntity<List<Sesion>> buscarPorEstado(@RequestParam String estado) {
     return ResponseEntity.ok(sesionService.buscarPorEstadoNativo(estado));
 }
 }
