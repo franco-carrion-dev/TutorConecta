@@ -78,8 +78,7 @@ public class MateriaController {
         }
     }
     @GetMapping("/buscar")
-    public ResponseEntity<List<Materia>> buscarPorNombre(
-        @RequestParam String texto) {
+    public ResponseEntity<List<Materia>> buscarPorNombre(@RequestParam String texto) {
     return ResponseEntity.ok(materiaService.buscarPorNombreParecido(texto));
    }
 }
