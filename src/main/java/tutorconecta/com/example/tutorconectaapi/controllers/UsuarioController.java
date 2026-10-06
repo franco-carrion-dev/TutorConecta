@@ -42,6 +42,7 @@ public class UsuarioController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<UsuarioResponseDTO> crearUsuario(@Valid @RequestBody UsuarioRequestDTO request) {
         UsuarioResponseDTO creado = usuarioService.crear(request);
         return ResponseEntity.created(URI.create("/api/usuarios/" + creado.getIdUsuario())).body(creado);
@@ -57,6 +58,7 @@ public class UsuarioController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<UsuarioResponseDTO> actualizarUsuario(
             @PathVariable Long id, @Valid @RequestBody UsuarioRequestDTO request) {
         try {
@@ -67,6 +69,7 @@ public class UsuarioController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Void> eliminarUsuario(@PathVariable Long id) {
         try {
             usuarioService.eliminar(id);
