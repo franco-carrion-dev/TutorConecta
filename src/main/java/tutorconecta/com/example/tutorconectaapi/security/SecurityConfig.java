@@ -25,12 +25,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http,
-<<<<<<< HEAD
             CustomJwtAuthenticationConverter jwtAuthenticationConverter) throws Exception {
-=======
-            JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
-        
->>>>>>> origin/main
         http
                 .cors(Customizer.withDefaults()) // Habilita el manejo básico de CORS
                 .csrf(csrf -> csrf.disable()) // Deshabilita la protección de falsificación para APIs
@@ -78,14 +73,8 @@ public class SecurityConfig {
 
             // Aquí es donde nace el ROLE_ADMIN. Funciona perfecto, pero exige usar hasRole()
             String authority = usuario.getRol() == null
-<<<<<<< HEAD
                     ? "ROLE_ESTUDIANTE"
                     : "ROLE_" + usuario.getRol().getDenominacion().trim().toUpperCase();
-=======
-                    ? "ROLE_USER"
-                    : "ROLE_" + usuario.getRol().getDenominacion().toUpperCase();
-                    
->>>>>>> origin/main
             return User.withUsername(usuario.getEmail())
                     .password(usuario.getPasswordHash())
                     .authorities(new SimpleGrantedAuthority(authority))

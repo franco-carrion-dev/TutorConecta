@@ -2,12 +2,8 @@ package tutorconecta.com.example.tutorconectaapi.controllers;
 
 import tutorconecta.com.example.tutorconectaapi.dtos.ReporteProgresoRequestDTO;
 import tutorconecta.com.example.tutorconectaapi.dtos.ReporteProgresoResponseDTO;
-<<<<<<< HEAD
-import tutorconecta.com.example.tutorconectaapi.servicesinterfaces.ReporteProgresoService;
-=======
 import tutorconecta.com.example.tutorconectaapi.entities.ReporteProgreso;
-import tutorconecta.com.example.tutorconectaapi.services.ReporteProgresoService;
->>>>>>> origin/main
+import tutorconecta.com.example.tutorconectaapi.servicesinterfaces.ReporteProgresoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;

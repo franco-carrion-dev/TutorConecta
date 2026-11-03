@@ -3,12 +3,8 @@ package tutorconecta.com.example.tutorconectaapi.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import tutorconecta.com.example.tutorconectaapi.dtos.UsuarioRequestDTO;
 import tutorconecta.com.example.tutorconectaapi.dtos.UsuarioResponseDTO;
-<<<<<<< HEAD
-import tutorconecta.com.example.tutorconectaapi.servicesinterfaces.UsuarioService;
-=======
 import tutorconecta.com.example.tutorconectaapi.repositories.UsuarioRepository;
-import tutorconecta.com.example.tutorconectaapi.services.UsuarioService;
->>>>>>> origin/main
+import tutorconecta.com.example.tutorconectaapi.servicesinterfaces.UsuarioService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
