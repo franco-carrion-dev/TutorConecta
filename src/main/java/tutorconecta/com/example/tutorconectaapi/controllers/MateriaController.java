@@ -24,7 +24,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/materias")
 @Tag(name = "Materias")
-@PreAuthorize("hasRole('ADMIN')")
 public class MateriaController {
     private final MateriaService materiaService;
 
@@ -33,6 +32,7 @@ public class MateriaController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Crear una materia")
     public ResponseEntity<MateriaResponseDTO> crear(
             @Valid @RequestBody MateriaRequestDTO request) {
@@ -57,6 +57,7 @@ public class MateriaController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Actualizar una materia")
     public ResponseEntity<MateriaResponseDTO> actualizar(
             @PathVariable Long id, @Valid @RequestBody MateriaRequestDTO request) {
@@ -68,6 +69,7 @@ public class MateriaController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Eliminar una materia")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         try {

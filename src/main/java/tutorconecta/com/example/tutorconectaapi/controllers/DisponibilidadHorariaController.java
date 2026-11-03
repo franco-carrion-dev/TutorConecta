@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -25,6 +26,7 @@ public class DisponibilidadHorariaController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'TUTOR')")
     @Operation(summary = "Crear una disponibilidad horaria")
     public ResponseEntity<DisponibilidadHorariaResponseDTO> crear(
             @Valid @RequestBody DisponibilidadHorariaRequestDTO disponibilidad) {
@@ -70,6 +72,7 @@ public class DisponibilidadHorariaController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TUTOR')")
     @Operation(summary = "Actualizar una disponibilidad horaria")
     public ResponseEntity<DisponibilidadHorariaResponseDTO> actualizar(
             @PathVariable Long id, @Valid @RequestBody DisponibilidadHorariaRequestDTO disponibilidad) {
@@ -81,6 +84,7 @@ public class DisponibilidadHorariaController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TUTOR')")
     @Operation(summary = "Eliminar una disponibilidad horaria")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         try {

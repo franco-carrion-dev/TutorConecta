@@ -50,13 +50,7 @@ public class SecurityConfig {
                                 "/swagger-ui.html")
                         .permitAll()
                         
-                        // 3. Rutas protegidas globales (Asegura usar Role, Spring busca el prefijo ROLE_ internamente)
-                        .requestMatchers("/api/reportes/**", "/api/reportes-progreso/**")
-                        .hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/usuarios/**")
-                        .hasRole("ADMIN")
-                        
-                        // 4. Cualquier otra requiere estar logueado
+                        // Los permisos específicos se declaran en los controladores.
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(resourceServer -> resourceServer
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)));

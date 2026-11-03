@@ -7,6 +7,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 public class CustomJwtAuthenticationConverter
@@ -14,15 +15,25 @@ public class CustomJwtAuthenticationConverter
 
     @Override
     public AbstractAuthenticationToken convert(Jwt jwt) {
-        String authorities = jwt.getClaimAsString("roles");
-        if (authorities == null) {
-            authorities = jwt.getClaimAsString("authorities");
+        Object roleClaim = jwt.getClaim("roles");
+        if (roleClaim == null) {
+            roleClaim = jwt.getClaim("authorities");
         }
-        List<SimpleGrantedAuthority> grantedAuthorities = authorities == null
-                ? List.of()
-                : Arrays.stream(authorities.split(","))
+
+        List<String> roles;
+        if (roleClaim instanceof String value) {
+            roles = Arrays.stream(value.split(",")).toList();
+        } else if (roleClaim instanceof Collection<?> values) {
+            roles = values.stream().filter(String.class::isInstance)
+                    .map(String.class::cast).toList();
+        } else {
+            roles = List.of();
+        }
+
+        List<SimpleGrantedAuthority> grantedAuthorities = roles.stream()
                 .map(String::trim)
                 .filter(value -> !value.isBlank())
+                .map(value -> value.startsWith("ROLE_") ? value : "ROLE_" + value)
                 .map(SimpleGrantedAuthority::new)
                 .toList();
 
