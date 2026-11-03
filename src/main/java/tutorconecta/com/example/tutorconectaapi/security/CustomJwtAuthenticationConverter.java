@@ -7,36 +7,33 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
-public class CustomJwtAuthenticationConverter
-        implements Converter<Jwt, AbstractAuthenticationToken> {
+public class CustomJwtAuthenticationConverter implements Converter<Jwt, AbstractAuthenticationToken> {
 
     @Override
     public AbstractAuthenticationToken convert(Jwt jwt) {
-        Object roleClaim = jwt.getClaim("roles");
-        if (roleClaim == null) {
-            roleClaim = jwt.getClaim("authorities");
-        }
 
-        List<String> roles;
-        if (roleClaim instanceof String value) {
-            roles = Arrays.stream(value.split(",")).toList();
-        } else if (roleClaim instanceof Collection<?> values) {
-            roles = values.stream().filter(String.class::isInstance)
-                    .map(String.class::cast).toList();
+        String roles = jwt.getClaimAsString("roles");
+
+        List<SimpleGrantedAuthority> authorities;
+
+        if (roles == null || roles.isBlank()) {
+            authorities = Collections.emptyList();
         } else {
-            roles = List.of();
+            authorities = Arrays.stream(roles.split(","))
+                    .map(String::trim)
+                    .filter(role -> !role.isBlank())
+                    .map(role -> role.startsWith("ROLE_") ? role : "ROLE_" + role) // Fuerza el ROLE_ para la validación
+                    .map(SimpleGrantedAuthority::new)
+                    .toList();
         }
 
-        List<SimpleGrantedAuthority> grantedAuthorities = roles.stream()
-                .map(String::trim)
-                .filter(value -> !value.isBlank())
-                .map(value -> value.startsWith("ROLE_") ? value : "ROLE_" + value)
-                .map(SimpleGrantedAuthority::new)
-                .toList();
-
-        return new JwtAuthenticationToken(jwt, grantedAuthorities, jwt.getSubject());
+        return new JwtAuthenticationToken(
+                jwt,
+                authorities,
+                jwt.getSubject()
+        );
     }
 }
