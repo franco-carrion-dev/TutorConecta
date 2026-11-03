@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import tutorconecta.com.example.tutorconectaapi.dtos.MateriaRequestDTO;
 import tutorconecta.com.example.tutorconectaapi.dtos.MateriaResponseDTO;
-import tutorconecta.com.example.tutorconectaapi.services.MateriaService;
+import tutorconecta.com.example.tutorconectaapi.servicesinterfaces.MateriaService;
 
 import java.net.URI;
 import java.util.List;
