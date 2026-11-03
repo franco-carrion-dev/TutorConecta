@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import tutorconecta.com.example.tutorconectaapi.dtos.UsuarioRequestDTO;
 import tutorconecta.com.example.tutorconectaapi.dtos.UsuarioResponseDTO;
 import tutorconecta.com.example.tutorconectaapi.repositories.UsuarioRepository;
-import tutorconecta.com.example.tutorconectaapi.services.UsuarioService;
+import tutorconecta.com.example.tutorconectaapi.servicesinterfaces.UsuarioService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;

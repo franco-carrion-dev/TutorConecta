@@ -2,7 +2,7 @@ package tutorconecta.com.example.tutorconectaapi.controllers; // Paquete corregi
 
 import tutorconecta.com.example.tutorconectaapi.dtos.SesionRequestDTO;
 import tutorconecta.com.example.tutorconectaapi.dtos.SesionResponseDTO;
-import tutorconecta.com.example.tutorconectaapi.services.SesionService;
+import tutorconecta.com.example.tutorconectaapi.servicesinterfaces.SesionService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;

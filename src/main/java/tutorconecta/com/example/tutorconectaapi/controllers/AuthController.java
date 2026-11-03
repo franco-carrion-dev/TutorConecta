@@ -1,20 +1,15 @@
 package tutorconecta.com.example.tutorconectaapi.controllers;
 
 import tutorconecta.com.example.tutorconectaapi.dtos.LoginRequestDTO;
-import tutorconecta.com.example.tutorconectaapi.entities.Usuario;
-import tutorconecta.com.example.tutorconectaapi.repositories.UsuarioRepository;
-import tutorconecta.com.example.tutorconectaapi.security.JwtUtil;
+import tutorconecta.com.example.tutorconectaapi.security.JwtTokenService;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -22,16 +17,11 @@ import java.util.Map;
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
-    private final JwtUtil jwtUtil;
-    private final UsuarioRepository usuarioRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenService jwtTokenService;
 
-    public AuthController(AuthenticationManager authenticationManager, JwtUtil jwtUtil,
-                          UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
+    public AuthController(AuthenticationManager authenticationManager, JwtTokenService jwtTokenService) {
         this.authenticationManager = authenticationManager;
-        this.jwtUtil = jwtUtil;
-        this.usuarioRepository = usuarioRepository;
-        this.passwordEncoder = passwordEncoder;
+        this.jwtTokenService = jwtTokenService;
     }
 
     @PostMapping("/login")
@@ -40,14 +30,7 @@ public class AuthController {
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
 
-        // Extraer el username y roles para el token
-        String username = authentication.getName();
-        List<String> roles = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .toList();
-
-        // Generar el token
-        String token = jwtUtil.generateToken(username, roles);
+        String token = jwtTokenService.generateToken(authentication);
 
         Map<String, String> response = new HashMap<>();
         response.put("token", token);

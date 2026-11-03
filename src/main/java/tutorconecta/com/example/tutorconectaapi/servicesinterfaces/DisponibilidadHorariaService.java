@@ -1,4 +1,4 @@
-package tutorconecta.com.example.tutorconectaapi.services;
+package tutorconecta.com.example.tutorconectaapi.servicesinterfaces;
 
 import org.springframework.data.repository.query.Param;
 import tutorconecta.com.example.tutorconectaapi.dtos.DisponibilidadHorariaRequestDTO;

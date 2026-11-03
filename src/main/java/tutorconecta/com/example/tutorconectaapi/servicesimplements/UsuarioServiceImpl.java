@@ -1,10 +1,11 @@
-package tutorconecta.com.example.tutorconectaapi.services;
+package tutorconecta.com.example.tutorconectaapi.servicesimplements;
 
 import tutorconecta.com.example.tutorconectaapi.components.EntityMapper;
 import tutorconecta.com.example.tutorconectaapi.dtos.UsuarioRequestDTO;
 import tutorconecta.com.example.tutorconectaapi.dtos.UsuarioResponseDTO;
 import tutorconecta.com.example.tutorconectaapi.entities.Usuario;
 import tutorconecta.com.example.tutorconectaapi.repositories.UsuarioRepository;
+import tutorconecta.com.example.tutorconectaapi.servicesinterfaces.UsuarioService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

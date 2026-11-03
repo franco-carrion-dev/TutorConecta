@@ -2,7 +2,7 @@ package tutorconecta.com.example.tutorconectaapi.controllers;
 
 import tutorconecta.com.example.tutorconectaapi.dtos.PagoRequestDTO;
 import tutorconecta.com.example.tutorconectaapi.dtos.PagoResponseDTO;
-import tutorconecta.com.example.tutorconectaapi.services.PagoService;
+import tutorconecta.com.example.tutorconectaapi.servicesinterfaces.PagoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;

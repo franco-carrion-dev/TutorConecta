@@ -15,9 +15,9 @@ public class OpenApiConfig {
 
         return new OpenAPI()
                 .info(new Info()
-                        .title("Demo API")
-                        .version("1.0")
-                        .description("API REST con Spring Security y JWT"))
+                        .title("TutorConecta API")
+                        .version("1.0.0")
+                        .description("API REST de tutorias con autenticacion JWT"))
                 .components(new Components()
                         .addSecuritySchemes(
                                 "bearerAuth",
