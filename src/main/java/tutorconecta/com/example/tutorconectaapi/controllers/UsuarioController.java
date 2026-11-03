@@ -36,13 +36,14 @@ public class UsuarioController {
     }
 
     @GetMapping("/reporte/por-rol")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Query Nativa: Reporte de cantidad de usuarios por rol")
     public ResponseEntity<List<Object[]>> reporteUsuariosPorRol() {
         return ResponseEntity.ok(usuarioRepository.reporteUsuariosPorRol());
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UsuarioResponseDTO> crearUsuario(@Valid @RequestBody UsuarioRequestDTO request) {
         UsuarioResponseDTO creado = usuarioService.crear(request);
         return ResponseEntity.created(URI.create("/api/usuarios/" + creado.getIdUsuario())).body(creado);
@@ -58,7 +59,7 @@ public class UsuarioController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UsuarioResponseDTO> actualizarUsuario(
             @PathVariable Long id, @Valid @RequestBody UsuarioRequestDTO request) {
         try {
@@ -69,7 +70,7 @@ public class UsuarioController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> eliminarUsuario(@PathVariable Long id) {
         try {
             usuarioService.eliminar(id);
