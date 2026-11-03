@@ -3,8 +3,10 @@ package tutorconecta.com.example.tutorconectaapi.controllers;
 import tutorconecta.com.example.tutorconectaapi.dtos.LoginRequestDTO;
 import tutorconecta.com.example.tutorconectaapi.security.JwtTokenService;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -25,15 +27,26 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequestDTO request) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
-        );
+    public ResponseEntity<?> login(@RequestBody LoginRequestDTO request) {
+        try {
+            // Intenta autenticar con la BD
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+            );
 
-        String token = jwtTokenService.generateToken(authentication);
+            // Si es correcto, genera el token
+            String token = jwtTokenService.generateToken(authentication);
 
-        Map<String, String> response = new HashMap<>();
-        response.put("token", token);
-        return ResponseEntity.ok(response);
+            Map<String, String> response = new HashMap<>();
+            response.put("token", token);
+            return ResponseEntity.ok(response);
+
+        } catch (BadCredentialsException e) {
+            // Si la contraseña o email están mal, devuelve esto en lugar de que explote Spring
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Error: Correo o contraseña incorrectos.");
+        } catch (Exception e) {
+            // Cualquier otro error interno
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno: " + e.getMessage());
+        }
     }
 }
