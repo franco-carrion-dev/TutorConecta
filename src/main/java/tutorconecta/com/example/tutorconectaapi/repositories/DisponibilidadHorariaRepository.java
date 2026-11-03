@@ -17,4 +17,12 @@ public interface DisponibilidadHorariaRepository extends JpaRepository<Disponibi
             ORDER BY d.diaSemana, d.horaInicio
             """)
     List<DisponibilidadHoraria> findDisponibilidadByTutorId(@Param("idTutor") Long idTutor);
+    //Buscar disponibilidad por dia
+    @Query("""
+            SELECT d
+            FROM DisponibilidadHoraria d
+            JOIN FETCH d.tutor t
+            WHERE LOWER(d.diaSemana) = LOWER(:diaSemana)
+            """)
+    List<DisponibilidadHoraria> findByDiaSemana(@Param("diaSemana") String diaSemana);
 }

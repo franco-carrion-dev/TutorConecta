@@ -16,4 +16,8 @@ public interface PagoService {
     PagoResponseDTO actualizar(Long id, PagoRequestDTO request);
 
     void eliminar(Long id);
+    List<PagoResponseDTO> buscarPorEstado(String estado);
+
+    List<PagoResponseDTO> buscarPorTutorYEstado(Long idTutor, String estado);
+
 }

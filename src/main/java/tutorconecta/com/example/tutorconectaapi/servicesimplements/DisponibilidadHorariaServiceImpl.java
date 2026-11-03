@@ -54,4 +54,14 @@ public class DisponibilidadHorariaServiceImpl implements DisponibilidadHorariaSe
                         "No existe una disponibilidad horaria con ID: " + id));
         repository.delete(disponibilidad);
     }
+
+    @Override
+    public List<DisponibilidadHoraria> findDisponibilidadByTutorId(Long id) {
+        return repository.findDisponibilidadByTutorId(id);
+    }
+
+    @Override
+    public List<DisponibilidadHoraria> findByDiaSemana(String diaSemana) {
+        return repository.findByDiaSemana(diaSemana);
+    }
 }

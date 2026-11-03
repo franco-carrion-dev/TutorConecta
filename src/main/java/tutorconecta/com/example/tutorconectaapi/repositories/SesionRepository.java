@@ -19,4 +19,7 @@ public interface SesionRepository extends JpaRepository<Sesion, Long> {
     // Query con JOIN: Obtener todas las sesiones agendadas de un estudiante, trayendo los datos del tutor
     @Query("SELECT s FROM Sesion s JOIN FETCH s.tutor t JOIN FETCH t.usuario u WHERE s.estudiante.idEstudiante = :idEstudiante AND s.estado = 'agendada'")
     List<Sesion> findSesionesAgendadasEstudiante(@Param("idEstudiante") Long idEstudiante);
+
+    @Query (value = "SELECT * FROM sesiones WHERE estado = :estado", nativeQuery = true)
+    List<Sesion> buscarPorEstadoNativo(@Param("estado") String estado);
 }

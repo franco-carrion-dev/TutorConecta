@@ -52,4 +52,18 @@ public class PagoServiceImpl implements PagoService {
                 .orElseThrow(() -> new EntityNotFoundException("No existe un pago con ID: " + id));
         repository.delete(pago);
     }
+
+    @Override
+    public List<PagoResponseDTO> buscarPorEstado(String estado) {
+        return repository.findByEstado(estado).stream()
+                .map(mapper::toPagoResponseDTO)
+                .toList();
+    }
+
+    @Override
+    public List<PagoResponseDTO> buscarPorTutorYEstado(Long idTutor, String estado) {
+        return repository.findPagosByTutorAndEstado(idTutor, estado).stream()
+                .map(mapper::toPagoResponseDTO)
+                .toList();
+    }
 }

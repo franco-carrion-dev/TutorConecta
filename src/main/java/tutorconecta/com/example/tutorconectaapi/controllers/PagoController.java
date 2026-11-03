@@ -67,4 +67,18 @@ public class PagoController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/estado/{estado}")
+    @Operation(summary = "Buscar pagos por su estado")
+    public ResponseEntity<List<PagoResponseDTO>> buscarPorEstado(@PathVariable String estado) {
+        return ResponseEntity.ok(pagoService.buscarPorEstado(estado));
+    }
+
+    @GetMapping("/tutor/{idTutor}/estado/{estado}")
+    @Operation(summary = "Buscar pagos de un tutor filtrados por su estado")
+    public ResponseEntity<List<PagoResponseDTO>> buscarPorTutorYEstado(
+            @PathVariable Long idTutor,
+            @PathVariable String estado) {
+        return ResponseEntity.ok(pagoService.buscarPorTutorYEstado(idTutor, estado));
+    }
 }

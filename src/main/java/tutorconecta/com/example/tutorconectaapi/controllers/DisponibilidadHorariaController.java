@@ -2,7 +2,12 @@ package tutorconecta.com.example.tutorconectaapi.controllers;
 
 import tutorconecta.com.example.tutorconectaapi.dtos.DisponibilidadHorariaRequestDTO;
 import tutorconecta.com.example.tutorconectaapi.dtos.DisponibilidadHorariaResponseDTO;
+<<<<<<< HEAD
 import tutorconecta.com.example.tutorconectaapi.servicesinterfaces.DisponibilidadHorariaService;
+=======
+import tutorconecta.com.example.tutorconectaapi.entities.DisponibilidadHoraria;
+import tutorconecta.com.example.tutorconectaapi.services.DisponibilidadHorariaService;
+>>>>>>> origin/main
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
@@ -46,6 +51,26 @@ public class DisponibilidadHorariaController {
         } catch (EntityNotFoundException exception) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/tutor/{idTutor}")
+    @Operation(summary = "Listar disponibilidades horarias por ID del tutor")
+    public ResponseEntity<List<DisponibilidadHoraria>> buscarPorTutorId(@PathVariable Long idTutor) {
+        List<DisponibilidadHoraria> disponibilidades = disponibilidadHorariaService.findDisponibilidadByTutorId(idTutor);
+        if (disponibilidades.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(disponibilidades);
+    }
+
+    @GetMapping("/dia/{diaSemana}")
+    @Operation(summary = "Listar disponibilidades horarias por día de la semana")
+    public ResponseEntity<List<DisponibilidadHoraria>> buscarPorDiaSemana(@PathVariable String diaSemana) {
+        List<DisponibilidadHoraria> disponibilidades = disponibilidadHorariaService.findByDiaSemana(diaSemana);
+        if (disponibilidades.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(disponibilidades);
     }
 
     @PutMapping("/{id}")

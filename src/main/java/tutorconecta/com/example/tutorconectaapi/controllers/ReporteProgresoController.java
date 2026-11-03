@@ -2,7 +2,12 @@ package tutorconecta.com.example.tutorconectaapi.controllers;
 
 import tutorconecta.com.example.tutorconectaapi.dtos.ReporteProgresoRequestDTO;
 import tutorconecta.com.example.tutorconectaapi.dtos.ReporteProgresoResponseDTO;
+<<<<<<< HEAD
 import tutorconecta.com.example.tutorconectaapi.servicesinterfaces.ReporteProgresoService;
+=======
+import tutorconecta.com.example.tutorconectaapi.entities.ReporteProgreso;
+import tutorconecta.com.example.tutorconectaapi.services.ReporteProgresoService;
+>>>>>>> origin/main
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
@@ -46,6 +51,18 @@ public class ReporteProgresoController {
         } catch (EntityNotFoundException exception) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/tutor/{idTutor}")
+    @Operation(summary = "Listar reportes de progreso asociados a un tutor específico")
+    public ResponseEntity<List<ReporteProgreso>> buscarPorTutorId(@PathVariable Long idTutor) {
+        return ResponseEntity.ok(reporteProgresoService.findReportesByTutorId(idTutor));
+    }
+
+    @GetMapping("/estudiante/{idEstudiante}")
+    @Operation(summary = "Listar reportes de progreso asociados a un estudiante específico")
+    public ResponseEntity<List<ReporteProgreso>> buscarPorEstudianteId(@PathVariable Long idEstudiante) {
+        return ResponseEntity.ok(reporteProgresoService.findReportesByEstudianteId(idEstudiante));
     }
 
     @PutMapping("/{id}")
