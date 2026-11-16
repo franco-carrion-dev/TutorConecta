@@ -2,11 +2,10 @@ package tutorconecta.com.example.tutorconectaapi.controllers; // Paquete corregi
 
 import tutorconecta.com.example.tutorconectaapi.dtos.SesionRequestDTO;
 import tutorconecta.com.example.tutorconectaapi.dtos.SesionResponseDTO;
-import tutorconecta.com.example.tutorconectaapi.servicesinterfaces.SesionService;
+import tutorconecta.com.example.tutorconectaapi.services.SesionService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -23,7 +22,6 @@ public class SesionController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'TUTOR', 'ESTUDIANTE')")
     public ResponseEntity<SesionResponseDTO> crearSesion(@Valid @RequestBody SesionRequestDTO request) {
         SesionResponseDTO creada = sesionService.crear(request);
         return ResponseEntity.created(URI.create("/api/sesiones/" + creada.getIdSesion())).body(creada);
@@ -44,7 +42,6 @@ public class SesionController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'TUTOR')")
     public ResponseEntity<SesionResponseDTO> actualizarSesion(
             @PathVariable Long id, @Valid @RequestBody SesionRequestDTO request) {
         try {
@@ -55,7 +52,6 @@ public class SesionController {
     }
 
     @PatchMapping("/{id}/estado")
-    @PreAuthorize("hasAnyRole('ADMIN', 'TUTOR')")
     public ResponseEntity<Void> actualizarEstado(
             @PathVariable Long id, @RequestParam String estado) {
         try {
@@ -67,7 +63,6 @@ public class SesionController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'TUTOR')")
     public ResponseEntity<Void> eliminarSesion(@PathVariable Long id) {
         try {
             sesionService.eliminar(id);

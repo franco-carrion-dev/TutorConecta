@@ -2,13 +2,12 @@ package tutorconecta.com.example.tutorconectaapi.controllers;
 
 import tutorconecta.com.example.tutorconectaapi.dtos.CalificacionRequestDTO;
 import tutorconecta.com.example.tutorconectaapi.dtos.CalificacionResponseDTO;
-import tutorconecta.com.example.tutorconectaapi.servicesinterfaces.CalificacionService;
+import tutorconecta.com.example.tutorconectaapi.services.CalificacionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -25,7 +24,6 @@ public class CalificacionController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'ESTUDIANTE')")
     @Operation(summary = "Crear una calificacion")
     public ResponseEntity<CalificacionResponseDTO> crear(
             @Valid @RequestBody CalificacionRequestDTO calificacion) {
@@ -50,7 +48,6 @@ public class CalificacionController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'ESTUDIANTE')")
     @Operation(summary = "Actualizar una calificacion")
     public ResponseEntity<CalificacionResponseDTO> actualizar(
             @PathVariable Long id, @Valid @RequestBody CalificacionRequestDTO calificacion) {
@@ -62,7 +59,6 @@ public class CalificacionController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'TUTOR')")
     @Operation(summary = "Eliminar una calificacion")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         try {

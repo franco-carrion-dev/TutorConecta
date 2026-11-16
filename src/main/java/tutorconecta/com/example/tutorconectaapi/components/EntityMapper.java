@@ -77,6 +77,8 @@ public class EntityMapper {
         response.setTarifaPorHora(tutor.getTarifaPorHora());
         response.setVerificado(tutor.getVerificado());
         response.setCalificacionPromedio(tutor.getCalificacionPromedio());
+        response.setIdMaterias(tutor.getMaterias() == null ? java.util.List.of()
+                : tutor.getMaterias().stream().map(Materia::getIdMateria).sorted().toList());
         return response;
     }
 
@@ -92,6 +94,11 @@ public class EntityMapper {
         tutor.setTarifaPorHora(request.getTarifaPorHora());
         tutor.setVerificado(request.getVerificado());
         tutor.setCalificacionPromedio(request.getCalificacionPromedio());
+        java.util.Set<Materia> materias = new java.util.HashSet<>();
+        if (request.getIdMaterias() != null) {
+            request.getIdMaterias().forEach(id -> materias.add(toMateriaReference(id)));
+        }
+        tutor.setMaterias(materias);
         return tutor;
     }
 

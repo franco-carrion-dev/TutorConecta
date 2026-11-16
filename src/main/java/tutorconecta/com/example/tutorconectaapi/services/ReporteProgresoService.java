@@ -1,4 +1,4 @@
-package tutorconecta.com.example.tutorconectaapi.servicesinterfaces;
+package tutorconecta.com.example.tutorconectaapi.services;
 
 import org.springframework.data.repository.query.Param;
 import tutorconecta.com.example.tutorconectaapi.dtos.ReporteProgresoRequestDTO;

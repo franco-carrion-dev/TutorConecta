@@ -17,7 +17,7 @@ public class UsuarioRequestDTO {
     @Email
     private String email;
 
-    @NotBlank
+    // Obligatorio al crear; al actualizar, si viene vacío se mantiene la contraseña actual
     private String passwordHash;
 
     private Boolean activo;

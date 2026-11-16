@@ -12,4 +12,6 @@ public class TutorResponseDTO {
     private BigDecimal tarifaPorHora;
     private Boolean verificado;
     private BigDecimal calificacionPromedio;
+
+    private java.util.List<Long> idMaterias;
 }

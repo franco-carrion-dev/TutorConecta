@@ -1,11 +1,10 @@
-package tutorconecta.com.example.tutorconectaapi.servicesimplements;
+package tutorconecta.com.example.tutorconectaapi.services;
 
 import tutorconecta.com.example.tutorconectaapi.components.EntityMapper;
 import tutorconecta.com.example.tutorconectaapi.dtos.UsuarioRequestDTO;
 import tutorconecta.com.example.tutorconectaapi.dtos.UsuarioResponseDTO;
 import tutorconecta.com.example.tutorconectaapi.entities.Usuario;
 import tutorconecta.com.example.tutorconectaapi.repositories.UsuarioRepository;
-import tutorconecta.com.example.tutorconectaapi.servicesinterfaces.UsuarioService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -30,8 +29,13 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public UsuarioResponseDTO crear(UsuarioRequestDTO request) {
+        if (request.getPasswordHash() == null || request.getPasswordHash().isBlank()) {
+            throw new IllegalArgumentException("La contraseña es obligatoria");
+        }
         Usuario usuario = entityMapper.toUsuarioEntity(request);
         usuario.setPasswordHash(passwordEncoder.encode(request.getPasswordHash()));
+        if (usuario.getActivo() == null) usuario.setActivo(true);
+        if (usuario.getFechaRegistro() == null) usuario.setFechaRegistro(java.time.LocalDateTime.now());
         return entityMapper.toUsuarioResponseDTO(usuarioRepository.save(usuario));
     }
 
@@ -51,10 +55,17 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public UsuarioResponseDTO actualizar(Long id, UsuarioRequestDTO request) {
-        buscarPorId(id);
+        Usuario actual = usuarioRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("No existe un usuario con ID: " + id));
         Usuario usuario = entityMapper.toUsuarioEntity(request);
         usuario.setIdUsuario(id);
-        usuario.setPasswordHash(passwordEncoder.encode(request.getPasswordHash()));
+        if (request.getPasswordHash() == null || request.getPasswordHash().isBlank()) {
+            usuario.setPasswordHash(actual.getPasswordHash());
+        } else {
+            usuario.setPasswordHash(passwordEncoder.encode(request.getPasswordHash()));
+        }
+        if (usuario.getFechaRegistro() == null) usuario.setFechaRegistro(actual.getFechaRegistro());
+        if (usuario.getActivo() == null) usuario.setActivo(actual.getActivo());
         return entityMapper.toUsuarioResponseDTO(usuarioRepository.save(usuario));
     }
 

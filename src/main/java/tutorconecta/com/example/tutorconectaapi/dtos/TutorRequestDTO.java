@@ -17,4 +17,6 @@ public class TutorRequestDTO {
 
     private Boolean verificado;
     private BigDecimal calificacionPromedio;
+
+    private java.util.List<Long> idMaterias;
 }

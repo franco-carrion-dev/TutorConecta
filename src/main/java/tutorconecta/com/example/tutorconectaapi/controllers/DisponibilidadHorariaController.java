@@ -2,14 +2,13 @@ package tutorconecta.com.example.tutorconectaapi.controllers;
 
 import tutorconecta.com.example.tutorconectaapi.dtos.DisponibilidadHorariaRequestDTO;
 import tutorconecta.com.example.tutorconectaapi.dtos.DisponibilidadHorariaResponseDTO;
-import tutorconecta.com.example.tutorconectaapi.entities.DisponibilidadHoraria;
-import tutorconecta.com.example.tutorconectaapi.servicesinterfaces.DisponibilidadHorariaService;
+import tutorconecta.com.example.tutorconectaapi.components.EntityMapper;
+import tutorconecta.com.example.tutorconectaapi.services.DisponibilidadHorariaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -20,13 +19,15 @@ import java.util.List;
 @Tag(name = "Disponibilidades horarias")
 public class DisponibilidadHorariaController {
     private final DisponibilidadHorariaService disponibilidadHorariaService;
+    private final EntityMapper mapper;
 
-    public DisponibilidadHorariaController(DisponibilidadHorariaService disponibilidadHorariaService) {
+    public DisponibilidadHorariaController(DisponibilidadHorariaService disponibilidadHorariaService,
+                                           EntityMapper mapper) {
         this.disponibilidadHorariaService = disponibilidadHorariaService;
+        this.mapper = mapper;
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'TUTOR')")
     @Operation(summary = "Crear una disponibilidad horaria")
     public ResponseEntity<DisponibilidadHorariaResponseDTO> crear(
             @Valid @RequestBody DisponibilidadHorariaRequestDTO disponibilidad) {
@@ -53,8 +54,9 @@ public class DisponibilidadHorariaController {
 
     @GetMapping("/tutor/{idTutor}")
     @Operation(summary = "Listar disponibilidades horarias por ID del tutor")
-    public ResponseEntity<List<DisponibilidadHoraria>> buscarPorTutorId(@PathVariable Long idTutor) {
-        List<DisponibilidadHoraria> disponibilidades = disponibilidadHorariaService.findDisponibilidadByTutorId(idTutor);
+    public ResponseEntity<List<DisponibilidadHorariaResponseDTO>> buscarPorTutorId(@PathVariable Long idTutor) {
+        List<DisponibilidadHorariaResponseDTO> disponibilidades = disponibilidadHorariaService.findDisponibilidadByTutorId(idTutor)
+                .stream().map(mapper::toDisponibilidadResponseDTO).toList();
         if (disponibilidades.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -63,8 +65,9 @@ public class DisponibilidadHorariaController {
 
     @GetMapping("/dia/{diaSemana}")
     @Operation(summary = "Listar disponibilidades horarias por día de la semana")
-    public ResponseEntity<List<DisponibilidadHoraria>> buscarPorDiaSemana(@PathVariable String diaSemana) {
-        List<DisponibilidadHoraria> disponibilidades = disponibilidadHorariaService.findByDiaSemana(diaSemana);
+    public ResponseEntity<List<DisponibilidadHorariaResponseDTO>> buscarPorDiaSemana(@PathVariable String diaSemana) {
+        List<DisponibilidadHorariaResponseDTO> disponibilidades = disponibilidadHorariaService.findByDiaSemana(diaSemana)
+                .stream().map(mapper::toDisponibilidadResponseDTO).toList();
         if (disponibilidades.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -72,7 +75,6 @@ public class DisponibilidadHorariaController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'TUTOR')")
     @Operation(summary = "Actualizar una disponibilidad horaria")
     public ResponseEntity<DisponibilidadHorariaResponseDTO> actualizar(
             @PathVariable Long id, @Valid @RequestBody DisponibilidadHorariaRequestDTO disponibilidad) {
@@ -84,7 +86,6 @@ public class DisponibilidadHorariaController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'TUTOR')")
     @Operation(summary = "Eliminar una disponibilidad horaria")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         try {

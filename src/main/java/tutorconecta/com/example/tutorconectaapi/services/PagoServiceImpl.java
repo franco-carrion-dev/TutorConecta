@@ -1,6 +1,4 @@
-package tutorconecta.com.example.tutorconectaapi.servicesimplements;
-
-import tutorconecta.com.example.tutorconectaapi.servicesinterfaces.PagoService;
+package tutorconecta.com.example.tutorconectaapi.services;
 
 import tutorconecta.com.example.tutorconectaapi.components.EntityMapper;
 import tutorconecta.com.example.tutorconectaapi.dtos.PagoRequestDTO;
@@ -16,15 +14,20 @@ import java.util.List;
 public class PagoServiceImpl implements PagoService {
     private final PagoRepository repository;
     private final EntityMapper mapper;
+    private final NotificacionService notificacionService;
 
-    public PagoServiceImpl(PagoRepository repository, EntityMapper mapper) {
+    public PagoServiceImpl(PagoRepository repository, EntityMapper mapper,
+                           NotificacionService notificacionService) {
         this.repository = repository;
         this.mapper = mapper;
+        this.notificacionService = notificacionService;
     }
 
     @Override
     public PagoResponseDTO crear(PagoRequestDTO request) {
-        return mapper.toPagoResponseDTO(repository.save(mapper.toPagoEntity(request)));
+        Pago guardado = repository.save(mapper.toPagoEntity(request));
+        notificacionService.pagoCambio(guardado.getIdPago(), "registrado");
+        return mapper.toPagoResponseDTO(guardado);
     }
 
     @Override
@@ -43,7 +46,9 @@ public class PagoServiceImpl implements PagoService {
         buscarPorId(id);
         Pago pago = mapper.toPagoEntity(request);
         pago.setIdPago(id);
-        return mapper.toPagoResponseDTO(repository.save(pago));
+        Pago guardado = repository.save(pago);
+        notificacionService.pagoCambio(id, "actualizado");
+        return mapper.toPagoResponseDTO(guardado);
     }
 
     @Override
