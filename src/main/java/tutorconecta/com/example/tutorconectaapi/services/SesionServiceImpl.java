@@ -1,6 +1,4 @@
-package tutorconecta.com.example.tutorconectaapi.servicesimplements;
-
-import tutorconecta.com.example.tutorconectaapi.servicesinterfaces.SesionService;
+package tutorconecta.com.example.tutorconectaapi.services;
 
 import tutorconecta.com.example.tutorconectaapi.components.EntityMapper;
 import tutorconecta.com.example.tutorconectaapi.dtos.SesionRequestDTO;
@@ -16,16 +14,22 @@ import java.util.List;
 public class SesionServiceImpl implements SesionService {
     private final SesionRepository sesionRepository;
     private final EntityMapper entityMapper;
+    private final NotificacionService notificacionService;
 
-    public SesionServiceImpl(SesionRepository sesionRepository, EntityMapper entityMapper) {
+    public SesionServiceImpl(SesionRepository sesionRepository, EntityMapper entityMapper,
+                             NotificacionService notificacionService) {
         this.sesionRepository = sesionRepository;
         this.entityMapper = entityMapper;
+        this.notificacionService = notificacionService;
     }
 
     @Override
     public SesionResponseDTO crear(SesionRequestDTO request) {
         Sesion sesion = entityMapper.toSesionEntity(request);
-        return entityMapper.toSesionResponseDTO(sesionRepository.save(sesion));
+        if (sesion.getFechaCreacion() == null) sesion.setFechaCreacion(java.time.LocalDateTime.now());
+        Sesion guardada = sesionRepository.save(sesion);
+        notificacionService.sesionCambio(guardada.getIdSesion(), "registrada");
+        return entityMapper.toSesionResponseDTO(guardada);
     }
 
     @Override
@@ -56,6 +60,7 @@ public class SesionServiceImpl implements SesionService {
                 .orElseThrow(() -> new EntityNotFoundException("No existe una sesion con ID: " + id));
         sesion.setEstado(estado);
         sesionRepository.save(sesion);
+        notificacionService.sesionCambio(id, estado);
     }
 
     @Override

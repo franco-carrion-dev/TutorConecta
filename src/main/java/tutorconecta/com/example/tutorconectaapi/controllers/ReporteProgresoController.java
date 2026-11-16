@@ -2,14 +2,13 @@ package tutorconecta.com.example.tutorconectaapi.controllers;
 
 import tutorconecta.com.example.tutorconectaapi.dtos.ReporteProgresoRequestDTO;
 import tutorconecta.com.example.tutorconectaapi.dtos.ReporteProgresoResponseDTO;
-import tutorconecta.com.example.tutorconectaapi.entities.ReporteProgreso;
-import tutorconecta.com.example.tutorconectaapi.servicesinterfaces.ReporteProgresoService;
+import tutorconecta.com.example.tutorconectaapi.components.EntityMapper;
+import tutorconecta.com.example.tutorconectaapi.services.ReporteProgresoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -20,13 +19,14 @@ import java.util.List;
 @Tag(name = "Reportes de progreso")
 public class ReporteProgresoController {
     private final ReporteProgresoService reporteProgresoService;
+    private final EntityMapper mapper;
 
-    public ReporteProgresoController(ReporteProgresoService reporteProgresoService) {
+    public ReporteProgresoController(ReporteProgresoService reporteProgresoService, EntityMapper mapper) {
         this.reporteProgresoService = reporteProgresoService;
+        this.mapper = mapper;
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'TUTOR')")
     @Operation(summary = "Crear un reporte de progreso")
     public ResponseEntity<ReporteProgresoResponseDTO> crear(
             @Valid @RequestBody ReporteProgresoRequestDTO reporte) {
@@ -36,14 +36,12 @@ public class ReporteProgresoController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'TUTOR', 'ESTUDIANTE')")
     @Operation(summary = "Listar todos los reportes de progreso")
     public ResponseEntity<List<ReporteProgresoResponseDTO>> listarTodos() {
         return ResponseEntity.ok(reporteProgresoService.listarTodos());
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'TUTOR', 'ESTUDIANTE')")
     @Operation(summary = "Buscar un reporte de progreso por ID")
     public ResponseEntity<ReporteProgresoResponseDTO> buscarPorId(@PathVariable Long id) {
         try {
@@ -54,21 +52,20 @@ public class ReporteProgresoController {
     }
 
     @GetMapping("/tutor/{idTutor}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'TUTOR')")
     @Operation(summary = "Listar reportes de progreso asociados a un tutor específico")
-    public ResponseEntity<List<ReporteProgreso>> buscarPorTutorId(@PathVariable Long idTutor) {
-        return ResponseEntity.ok(reporteProgresoService.findReportesByTutorId(idTutor));
+    public ResponseEntity<List<ReporteProgresoResponseDTO>> buscarPorTutorId(@PathVariable Long idTutor) {
+        return ResponseEntity.ok(reporteProgresoService.findReportesByTutorId(idTutor)
+                .stream().map(mapper::toReporteResponseDTO).toList());
     }
 
     @GetMapping("/estudiante/{idEstudiante}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'TUTOR', 'ESTUDIANTE')")
     @Operation(summary = "Listar reportes de progreso asociados a un estudiante específico")
-    public ResponseEntity<List<ReporteProgreso>> buscarPorEstudianteId(@PathVariable Long idEstudiante) {
-        return ResponseEntity.ok(reporteProgresoService.findReportesByEstudianteId(idEstudiante));
+    public ResponseEntity<List<ReporteProgresoResponseDTO>> buscarPorEstudianteId(@PathVariable Long idEstudiante) {
+        return ResponseEntity.ok(reporteProgresoService.findReportesByEstudianteId(idEstudiante)
+                .stream().map(mapper::toReporteResponseDTO).toList());
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'TUTOR')")
     @Operation(summary = "Actualizar un reporte de progreso")
     public ResponseEntity<ReporteProgresoResponseDTO> actualizar(
             @PathVariable Long id, @Valid @RequestBody ReporteProgresoRequestDTO reporte) {
@@ -80,7 +77,6 @@ public class ReporteProgresoController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'TUTOR')")
     @Operation(summary = "Eliminar un reporte de progreso")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         try {

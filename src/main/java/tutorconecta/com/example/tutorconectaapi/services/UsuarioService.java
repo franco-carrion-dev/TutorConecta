@@ -1,4 +1,4 @@
-package tutorconecta.com.example.tutorconectaapi.servicesinterfaces;
+package tutorconecta.com.example.tutorconectaapi.services;
 
 import tutorconecta.com.example.tutorconectaapi.dtos.UsuarioRequestDTO;
 import tutorconecta.com.example.tutorconectaapi.dtos.UsuarioResponseDTO;

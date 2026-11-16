@@ -1,6 +1,4 @@
-package tutorconecta.com.example.tutorconectaapi.servicesimplements;
-
-import tutorconecta.com.example.tutorconectaapi.servicesinterfaces.ReporteProgresoService;
+package tutorconecta.com.example.tutorconectaapi.services;
 
 import tutorconecta.com.example.tutorconectaapi.components.EntityMapper;
 import tutorconecta.com.example.tutorconectaapi.dtos.ReporteProgresoRequestDTO;

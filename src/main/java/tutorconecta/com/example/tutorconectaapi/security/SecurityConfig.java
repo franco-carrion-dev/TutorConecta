@@ -1,17 +1,11 @@
 package tutorconecta.com.example.tutorconectaapi.security;
 
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import tutorconecta.com.example.tutorconectaapi.entities.Usuario;
 import tutorconecta.com.example.tutorconectaapi.repositories.UsuarioRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -21,64 +15,43 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
-
-    @Value("${app.cors.allowed-origins:*}")
-    private String allowedOrigins;
-
     @Bean
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http,
-            CustomJwtAuthenticationConverter jwtAuthenticationConverter) throws Exception {
+            JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
         http
-                .cors(Customizer.withDefaults()) // Habilita el manejo básico de CORS
-                .csrf(csrf -> csrf.disable()) // Deshabilita la protección de falsificación para APIs
+                .csrf(csrf -> csrf.disable())
+                .cors(Customizer.withDefaults())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // 1. EL SALVAVIDAS: Permitir peticiones fantasma (Preflight OPTIONS) de los navegadores/Swagger
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        
-                        // 2. Rutas públicas
                         .requestMatchers(
-                                "/api/auth/**",
+                                "/api/auth/login",
+                                "/api/auth/registro",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html")
                         .permitAll()
-                        
-                        // Los permisos específicos se declaran en los controladores.
+                        .requestMatchers("/api/reportes/**")
+                        .hasRole("ADMIN")
+                        .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/usuarios/**")
+                        .hasRole("ADMIN")
                         .anyRequest().authenticated())
-                .oauth2ResourceServer(resourceServer -> resourceServer
-                        .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)));
+                .exceptionHandling(exceptions -> exceptions
+                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
-    }
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(
-                java.util.Arrays.stream(allowedOrigins.split(","))
-                        .map(String::trim)
-                        .filter(origin -> !origin.isBlank())
-                        .toList());
-        configuration.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(java.util.List.of("*"));
-        configuration.setExposedHeaders(java.util.List.of("Authorization"));
-        configuration.setAllowCredentials(false);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
-
-    @Bean
-    public CustomJwtAuthenticationConverter jwtAuthenticationConverter() {
-        return new CustomJwtAuthenticationConverter();
     }
 
     @Bean
@@ -90,10 +63,12 @@ public class SecurityConfig {
                         "Usuario no encontrado: " + username);
             }
 
-            // Aquí es donde nace el ROLE_ADMIN. Funciona perfecto, pero exige usar hasRole()
-            String authority = usuario.getRol() == null
-                    ? "ROLE_ESTUDIANTE"
-                    : "ROLE_" + usuario.getRol().getDenominacion().trim().toUpperCase();
+            String authority = "ROLE_USER";
+            if (usuario.getRol() != null && usuario.getRol().getDenominacion() != null) {
+                String rol = usuario.getRol().getDenominacion().trim().toUpperCase();
+                // "Administrador" / "ADMIN" -> ROLE_ADMIN para que funcione hasRole('ADMIN')
+                authority = "ROLE_" + (rol.startsWith("ADMIN") ? "ADMIN" : rol);
+            }
             return User.withUsername(usuario.getEmail())
                     .password(usuario.getPasswordHash())
                     .authorities(new SimpleGrantedAuthority(authority))
