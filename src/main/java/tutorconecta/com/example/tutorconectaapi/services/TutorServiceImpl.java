@@ -5,8 +5,11 @@ import tutorconecta.com.example.tutorconectaapi.dtos.TutorRequestDTO;
 import tutorconecta.com.example.tutorconectaapi.dtos.TutorResponseDTO;
 import tutorconecta.com.example.tutorconectaapi.entities.Tutor;
 import tutorconecta.com.example.tutorconectaapi.repositories.TutorRepository;
+import tutorconecta.com.example.tutorconectaapi.repositories.UsuarioRepository;
+import tutorconecta.com.example.tutorconectaapi.entities.Usuario;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -14,15 +17,27 @@ import java.util.List;
 public class TutorServiceImpl implements TutorService {
     private final TutorRepository repository;
     private final EntityMapper mapper;
+    private final UsuarioRepository usuarioRepository;
 
-    public TutorServiceImpl(TutorRepository repository, EntityMapper mapper) {
+    public TutorServiceImpl(TutorRepository repository, EntityMapper mapper, UsuarioRepository usuarioRepository) {
         this.repository = repository;
         this.mapper = mapper;
+        this.usuarioRepository = usuarioRepository;
     }
 
     @Override
+    @Transactional
     public TutorResponseDTO crear(TutorRequestDTO request) {
-        return mapper.toTutorResponseDTO(repository.save(mapper.toTutorEntity(request)));
+        Usuario usuario = usuarioRepository.findById(request.getIdUsuario())
+                .orElseThrow(() -> new EntityNotFoundException("No existe un usuario con ID: " + request.getIdUsuario()));
+        if (repository.existsById(usuario.getIdUsuario())) {
+            throw new IllegalArgumentException("El usuario ya tiene un perfil registrado");
+        }
+        Tutor tutor = mapper.toTutorEntity(request);
+        // Con @MapsId el ID se toma del usuario: se deja null para que JPA haga persist (no merge)
+        tutor.setIdTutor(null);
+        tutor.setUsuario(usuario);
+        return mapper.toTutorResponseDTO(repository.save(tutor));
     }
 
     @Override
