@@ -5,6 +5,12 @@ import tutorconecta.com.example.tutorconectaapi.dtos.UsuarioRequestDTO;
 import tutorconecta.com.example.tutorconectaapi.dtos.UsuarioResponseDTO;
 import tutorconecta.com.example.tutorconectaapi.entities.Usuario;
 import tutorconecta.com.example.tutorconectaapi.repositories.UsuarioRepository;
+import tutorconecta.com.example.tutorconectaapi.repositories.TutorRepository;
+import tutorconecta.com.example.tutorconectaapi.repositories.EstudianteRepository;
+import tutorconecta.com.example.tutorconectaapi.repositories.SesionRepository;
+import tutorconecta.com.example.tutorconectaapi.repositories.DisponibilidadHorariaRepository;
+import tutorconecta.com.example.tutorconectaapi.entities.Tutor;
+import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,14 +23,26 @@ public class UsuarioServiceImpl implements UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final EntityMapper entityMapper;
     private final PasswordEncoder passwordEncoder;
+    private final TutorRepository tutorRepository;
+    private final EstudianteRepository estudianteRepository;
+    private final SesionRepository sesionRepository;
+    private final DisponibilidadHorariaRepository disponibilidadRepository;
 
     public UsuarioServiceImpl(
             UsuarioRepository usuarioRepository,
             EntityMapper entityMapper,
-            PasswordEncoder passwordEncoder) {
+            PasswordEncoder passwordEncoder,
+            TutorRepository tutorRepository,
+            EstudianteRepository estudianteRepository,
+            SesionRepository sesionRepository,
+            DisponibilidadHorariaRepository disponibilidadRepository) {
         this.usuarioRepository = usuarioRepository;
         this.entityMapper = entityMapper;
         this.passwordEncoder = passwordEncoder;
+        this.tutorRepository = tutorRepository;
+        this.estudianteRepository = estudianteRepository;
+        this.sesionRepository = sesionRepository;
+        this.disponibilidadRepository = disponibilidadRepository;
     }
 
     @Override
@@ -70,10 +88,25 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
+    @Transactional
     public void eliminar(Long id) {
         if (!usuarioRepository.existsById(id)) {
             throw new EntityNotFoundException("No existe un usuario con ID: " + id);
         }
+        // Si participa en sesiones no se borra: se perdería el historial de pagos y calificaciones
+        if (sesionRepository.existsByEstudianteIdEstudiante(id) || sesionRepository.existsByTutorIdTutor(id)) {
+            throw new IllegalArgumentException(
+                    "No se puede eliminar: el usuario tiene sesiones registradas. Desactívalo en su lugar.");
+        }
+        // Primero se borran los datos que dependen del usuario (perfil y disponibilidad)
+        Tutor tutor = tutorRepository.findById(id).orElse(null);
+        if (tutor != null) {
+            disponibilidadRepository.deleteAll(disponibilidadRepository.findDisponibilidadByTutorId(id));
+            if (tutor.getMaterias() != null) tutor.getMaterias().clear();
+            tutorRepository.delete(tutor);
+        }
+        estudianteRepository.findById(id).ifPresent(estudianteRepository::delete);
+        usuarioRepository.flush();
         usuarioRepository.deleteById(id);
     }
 

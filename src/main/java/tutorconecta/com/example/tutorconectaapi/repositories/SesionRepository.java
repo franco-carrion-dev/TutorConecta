@@ -12,6 +12,10 @@ public interface SesionRepository extends JpaRepository<Sesion, Long> {
     // Query Simple
     List<Sesion> findByEstado(String estado);
 
+    boolean existsByEstudianteIdEstudiante(Long idEstudiante);
+
+    boolean existsByTutorIdTutor(Long idTutor);
+
     // Query con JOIN explícito: Obtener sesiones de un tutor específico por nombre de materia
     @Query("SELECT s FROM Sesion s JOIN s.materia m WHERE s.tutor.idTutor = :idTutor AND m.nombre = :nombreMateria")
     List<Sesion> findSesionesByTutorAndMateria(@Param("idTutor") Long idTutor, @Param("nombreMateria") String nombreMateria);
