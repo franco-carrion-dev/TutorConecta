@@ -1,5 +1,10 @@
 package tutorconecta.com.example.tutorconectaapi.controllers;
 
+import java.math.BigDecimal;
+import org.springframework.web.bind.annotation.GetMapping;
+import tutorconecta.com.example.tutorconectaapi.dtos.UsuariosPorRolDTO;
+import tutorconecta.com.example.tutorconectaapi.dtos.PorcentajeRolDTO;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
@@ -63,5 +68,23 @@ public class RoleController {
         }
         roleRepository.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+@GetMapping("/reporte/usuarios-por-rol")
+    @Operation(summary = "Reporte: total de usuarios por rol (activos e inactivos)")
+    public ResponseEntity<List<UsuariosPorRolDTO>> reporteUsuariosPorRol() {
+        List<UsuariosPorRolDTO> lista = roleRepository.contarUsuariosPorRol().stream()
+                .map(f -> new UsuariosPorRolDTO(((Number) f[0]).longValue(), (String) f[1], ((Number) f[2]).longValue(), ((Number) f[3]).longValue(), ((Number) f[4]).longValue()))
+                .toList();
+        return ResponseEntity.ok(lista);
+    }
+
+    @GetMapping("/reporte/porcentaje-por-rol")
+    @Operation(summary = "Reporte: porcentaje de usuarios por rol")
+    public ResponseEntity<List<PorcentajeRolDTO>> reportePorcentajePorRol() {
+        List<PorcentajeRolDTO> lista = roleRepository.porcentajeUsuariosPorRol().stream()
+                .map(f -> new PorcentajeRolDTO((String) f[0], ((Number) f[1]).longValue(), new BigDecimal(f[2].toString())))
+                .toList();
+        return ResponseEntity.ok(lista);
     }
 }
