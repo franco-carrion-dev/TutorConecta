@@ -32,7 +32,8 @@ public class NotificacionService {
     private final SesionRepository sesionRepository;
     private final PagoRepository pagoRepository;
 
-    @Value("${spring.mail.username:}")
+    /** Correo que aparece como remitente. En Brevo debe ser un remitente verificado (app.mail.from). */
+    @Value("${app.mail.from:${spring.mail.username:}}")
     private String remitente;
 
     public NotificacionService(ObjectProvider<JavaMailSender> mailSender,
