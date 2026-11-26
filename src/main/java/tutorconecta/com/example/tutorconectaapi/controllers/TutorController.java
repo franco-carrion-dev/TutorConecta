@@ -1,5 +1,10 @@
 package tutorconecta.com.example.tutorconectaapi.controllers;
 
+import java.math.BigDecimal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import tutorconecta.com.example.tutorconectaapi.dtos.IngresosTutorDTO;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
@@ -65,5 +70,18 @@ public class TutorController {
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+@GetMapping("/reporte/ingresos")
+    @Operation(summary = "Reporte: ingresos por tutor (pagos completados)")
+    public ResponseEntity<List<IngresosTutorDTO>> reporteIngresos() {
+        return ResponseEntity.ok(service.reporteIngresos());
+    }
+
+    @GetMapping("/tarifa")
+    @Operation(summary = "Buscar tutores por rango de tarifa por hora")
+    public ResponseEntity<List<TutorResponseDTO>> buscarPorRangoTarifa(
+            @RequestParam BigDecimal min, @RequestParam BigDecimal max) {
+        return ResponseEntity.ok(service.buscarPorRangoTarifa(min, max));
     }
 }

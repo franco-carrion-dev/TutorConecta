@@ -1,5 +1,8 @@
 package tutorconecta.com.example.tutorconectaapi.services;
 
+import java.math.BigDecimal;
+import tutorconecta.com.example.tutorconectaapi.dtos.IngresosTutorDTO;
+
 import tutorconecta.com.example.tutorconectaapi.components.EntityMapper;
 import tutorconecta.com.example.tutorconectaapi.dtos.TutorRequestDTO;
 import tutorconecta.com.example.tutorconectaapi.dtos.TutorResponseDTO;
@@ -64,5 +67,19 @@ public class TutorServiceImpl implements TutorService {
         Tutor tutor = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("No existe un tutor con ID: " + id));
         repository.delete(tutor);
+    }
+
+@Override
+    public List<IngresosTutorDTO> reporteIngresos() {
+        return repository.ingresosPorTutor().stream()
+                .map(f -> new IngresosTutorDTO(((Number) f[0]).longValue(), (String) f[1], ((Number) f[2]).longValue(), new BigDecimal(f[3].toString())))
+                .toList();
+    }
+
+    @Override
+    public List<TutorResponseDTO> buscarPorRangoTarifa(BigDecimal min, BigDecimal max) {
+        return repository.buscarPorRangoTarifa(min, max).stream()
+                .map(mapper::toTutorResponseDTO)
+                .toList();
     }
 }
