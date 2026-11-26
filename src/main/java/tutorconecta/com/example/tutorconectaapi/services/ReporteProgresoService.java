@@ -1,5 +1,8 @@
 package tutorconecta.com.example.tutorconectaapi.services;
 
+import tutorconecta.com.example.tutorconectaapi.dtos.ProgresoPorNivelDTO;
+import tutorconecta.com.example.tutorconectaapi.dtos.MateriaCantidadDTO;
+
 import org.springframework.data.repository.query.Param;
 import tutorconecta.com.example.tutorconectaapi.dtos.ReporteProgresoRequestDTO;
 import tutorconecta.com.example.tutorconectaapi.dtos.ReporteProgresoResponseDTO;
@@ -24,4 +27,6 @@ public interface ReporteProgresoService {
 
     List<ReporteProgreso> findReportesByTutorId(Long idTutor);
 
+List<ProgresoPorNivelDTO> reportePorNivel();
+    List<MateriaCantidadDTO> reportePorMateria();
 }

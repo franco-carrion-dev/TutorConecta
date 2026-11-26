@@ -1,5 +1,9 @@
 package tutorconecta.com.example.tutorconectaapi.controllers;
 
+import org.springframework.web.bind.annotation.GetMapping;
+import tutorconecta.com.example.tutorconectaapi.dtos.ProgresoPorNivelDTO;
+import tutorconecta.com.example.tutorconectaapi.dtos.MateriaCantidadDTO;
+
 import tutorconecta.com.example.tutorconectaapi.dtos.ReporteProgresoRequestDTO;
 import tutorconecta.com.example.tutorconectaapi.dtos.ReporteProgresoResponseDTO;
 import tutorconecta.com.example.tutorconectaapi.components.EntityMapper;
@@ -85,5 +89,17 @@ public class ReporteProgresoController {
         } catch (EntityNotFoundException exception) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+@GetMapping("/reporte/por-nivel")
+    @Operation(summary = "Reporte: cantidad de reportes por nivel de progreso")
+    public ResponseEntity<List<ProgresoPorNivelDTO>> reportePorNivel() {
+        return ResponseEntity.ok(reporteProgresoService.reportePorNivel());
+    }
+
+    @GetMapping("/reporte/por-materia")
+    @Operation(summary = "Reporte: cantidad de reportes de progreso por materia")
+    public ResponseEntity<List<MateriaCantidadDTO>> reportePorMateria() {
+        return ResponseEntity.ok(reporteProgresoService.reportePorMateria());
     }
 }

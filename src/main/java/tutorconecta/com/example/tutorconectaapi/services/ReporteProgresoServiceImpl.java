@@ -1,5 +1,8 @@
 package tutorconecta.com.example.tutorconectaapi.services;
 
+import tutorconecta.com.example.tutorconectaapi.dtos.ProgresoPorNivelDTO;
+import tutorconecta.com.example.tutorconectaapi.dtos.MateriaCantidadDTO;
+
 import tutorconecta.com.example.tutorconectaapi.components.EntityMapper;
 import tutorconecta.com.example.tutorconectaapi.dtos.ReporteProgresoRequestDTO;
 import tutorconecta.com.example.tutorconectaapi.dtos.ReporteProgresoResponseDTO;
@@ -61,5 +64,17 @@ public class ReporteProgresoServiceImpl implements ReporteProgresoService {
         return repository.findReportesByTutorId(idTutor);
     }
 
+@Override
+    public List<ProgresoPorNivelDTO> reportePorNivel() {
+        return repository.contarPorNivelProgreso().stream()
+                .map(f -> new ProgresoPorNivelDTO((String) f[0], ((Number) f[1]).longValue()))
+                .toList();
+    }
 
+    @Override
+    public List<MateriaCantidadDTO> reportePorMateria() {
+        return repository.contarPorMateria().stream()
+                .map(f -> new MateriaCantidadDTO(((Number) f[0]).longValue(), (String) f[1], (String) f[2], ((Number) f[3]).longValue()))
+                .toList();
+    }
 }
