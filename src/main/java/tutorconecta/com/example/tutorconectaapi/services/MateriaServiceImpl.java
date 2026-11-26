@@ -1,5 +1,7 @@
 package tutorconecta.com.example.tutorconectaapi.services;
 
+import tutorconecta.com.example.tutorconectaapi.dtos.MateriaCantidadDTO;
+
 import tutorconecta.com.example.tutorconectaapi.components.EntityMapper;
 import tutorconecta.com.example.tutorconectaapi.dtos.MateriaRequestDTO;
 import tutorconecta.com.example.tutorconectaapi.dtos.MateriaResponseDTO;
@@ -49,5 +51,19 @@ public class MateriaServiceImpl implements MateriaService {
         Materia materia = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("No existe una materia con ID: " + id));
         repository.delete(materia);
+    }
+
+@Override
+    public List<MateriaCantidadDTO> reporteSesionesPorMateria() {
+        return repository.contarSesionesPorMateria().stream()
+                .map(f -> new MateriaCantidadDTO(((Number) f[0]).longValue(), (String) f[1], (String) f[2], ((Number) f[3]).longValue()))
+                .toList();
+    }
+
+    @Override
+    public List<MateriaCantidadDTO> reporteTutoresPorMateria() {
+        return repository.contarTutoresPorMateria().stream()
+                .map(f -> new MateriaCantidadDTO(((Number) f[0]).longValue(), (String) f[1], (String) f[2], ((Number) f[3]).longValue()))
+                .toList();
     }
 }

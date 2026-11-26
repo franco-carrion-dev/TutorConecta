@@ -1,5 +1,7 @@
 package tutorconecta.com.example.tutorconectaapi.controllers;
 
+import tutorconecta.com.example.tutorconectaapi.dtos.MateriaCantidadDTO;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
@@ -78,5 +80,17 @@ public class MateriaController {
         } catch (EntityNotFoundException exception) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+@GetMapping("/reporte/sesiones-por-materia")
+    @Operation(summary = "Reporte: cantidad de sesiones (no canceladas) por materia")
+    public ResponseEntity<List<MateriaCantidadDTO>> reporteSesionesPorMateria() {
+        return ResponseEntity.ok(materiaService.reporteSesionesPorMateria());
+    }
+
+    @GetMapping("/reporte/tutores-por-materia")
+    @Operation(summary = "Reporte: cantidad de tutores que dictan cada materia")
+    public ResponseEntity<List<MateriaCantidadDTO>> reporteTutoresPorMateria() {
+        return ResponseEntity.ok(materiaService.reporteTutoresPorMateria());
     }
 }
