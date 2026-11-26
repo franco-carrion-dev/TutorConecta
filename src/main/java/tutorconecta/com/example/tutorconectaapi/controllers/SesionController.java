@@ -1,5 +1,12 @@
 package tutorconecta.com.example.tutorconectaapi.controllers; // Paquete corregido
 
+import java.time.LocalDate;
+import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.format.annotation.DateTimeFormat;
+import tutorconecta.com.example.tutorconectaapi.dtos.SesionesPorEstadoDTO;
+
 import tutorconecta.com.example.tutorconectaapi.dtos.SesionRequestDTO;
 import tutorconecta.com.example.tutorconectaapi.dtos.SesionResponseDTO;
 import tutorconecta.com.example.tutorconectaapi.services.SesionService;
@@ -70,5 +77,19 @@ public class SesionController {
         } catch (EntityNotFoundException exception) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+@GetMapping("/reporte/por-estado")
+    @Operation(summary = "Reporte: cantidad de sesiones por estado")
+    public ResponseEntity<List<SesionesPorEstadoDTO>> reportePorEstado() {
+        return ResponseEntity.ok(sesionService.reportePorEstado());
+    }
+
+    @GetMapping("/rango")
+    @Operation(summary = "Buscar sesiones que inician entre dos fechas (yyyy-MM-dd)")
+    public ResponseEntity<List<SesionResponseDTO>> buscarEntreFechas(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fin) {
+        return ResponseEntity.ok(sesionService.buscarEntreFechas(inicio, fin));
     }
 }

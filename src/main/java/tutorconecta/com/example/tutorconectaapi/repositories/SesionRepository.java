@@ -1,5 +1,7 @@
 package tutorconecta.com.example.tutorconectaapi.repositories;
 
+import java.time.LocalDateTime;
+
 import tutorconecta.com.example.tutorconectaapi.entities.Sesion;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -26,4 +28,17 @@ public interface SesionRepository extends JpaRepository<Sesion, Long> {
 
     @Query (value = "SELECT * FROM sesiones WHERE estado = :estado", nativeQuery = true)
     List<Sesion> buscarPorEstadoNativo(@Param("estado") String estado);
+
+// Reporte: cantidad de sesiones por estado
+    @Query(value = """
+            SELECT s.estado, COUNT(s.id_sesion) AS cantidad
+            FROM sesiones s
+            GROUP BY s.estado
+            ORDER BY cantidad DESC
+            """, nativeQuery = true)
+    List<Object[]> contarSesionesPorEstado();
+
+    // Sesiones que inician dentro de un rango de fechas
+    @Query("SELECT s FROM Sesion s WHERE s.fechaInicio BETWEEN :inicio AND :fin ORDER BY s.fechaInicio")
+    List<Sesion> buscarEntreFechas(@Param("inicio") LocalDateTime inicio, @Param("fin") LocalDateTime fin);
 }

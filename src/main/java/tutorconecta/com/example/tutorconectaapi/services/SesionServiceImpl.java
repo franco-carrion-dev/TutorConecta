@@ -1,5 +1,8 @@
 package tutorconecta.com.example.tutorconectaapi.services;
 
+import java.time.LocalDate;
+import tutorconecta.com.example.tutorconectaapi.dtos.SesionesPorEstadoDTO;
+
 import tutorconecta.com.example.tutorconectaapi.components.EntityMapper;
 import tutorconecta.com.example.tutorconectaapi.dtos.SesionRequestDTO;
 import tutorconecta.com.example.tutorconectaapi.dtos.SesionResponseDTO;
@@ -71,4 +74,17 @@ public class SesionServiceImpl implements SesionService {
         sesionRepository.deleteById(id);
     }
 
+@Override
+    public List<SesionesPorEstadoDTO> reportePorEstado() {
+        return sesionRepository.contarSesionesPorEstado().stream()
+                .map(f -> new SesionesPorEstadoDTO((String) f[0], ((Number) f[1]).longValue()))
+                .toList();
+    }
+
+    @Override
+    public List<SesionResponseDTO> buscarEntreFechas(LocalDate inicio, LocalDate fin) {
+        return sesionRepository.buscarEntreFechas(inicio.atStartOfDay(), fin.atTime(23, 59, 59)).stream()
+                .map(entityMapper::toSesionResponseDTO)
+                .toList();
+    }
 }

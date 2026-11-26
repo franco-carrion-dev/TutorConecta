@@ -1,5 +1,8 @@
 package tutorconecta.com.example.tutorconectaapi.services;
 
+import java.time.LocalDate;
+import tutorconecta.com.example.tutorconectaapi.dtos.SesionesPorEstadoDTO;
+
 import tutorconecta.com.example.tutorconectaapi.dtos.SesionRequestDTO;
 import tutorconecta.com.example.tutorconectaapi.dtos.SesionResponseDTO;
 
@@ -18,4 +21,7 @@ public interface SesionService {
     void updateEstadoSesion(Long id, String estado);
 
     void eliminar(Long id);
+
+List<SesionesPorEstadoDTO> reportePorEstado();
+    List<SesionResponseDTO> buscarEntreFechas(LocalDate inicio, LocalDate fin);
 }
