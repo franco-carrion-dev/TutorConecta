@@ -1,5 +1,10 @@
 package tutorconecta.com.example.tutorconectaapi.controllers;
 
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import tutorconecta.com.example.tutorconectaapi.dtos.MontoPorMetodoDTO;
+import tutorconecta.com.example.tutorconectaapi.dtos.MontoPorMesDTO;
+
 import tutorconecta.com.example.tutorconectaapi.dtos.PagoRequestDTO;
 import tutorconecta.com.example.tutorconectaapi.dtos.PagoResponseDTO;
 import tutorconecta.com.example.tutorconectaapi.services.PagoService;
@@ -80,5 +85,17 @@ public class PagoController {
             @PathVariable Long idTutor,
             @PathVariable String estado) {
         return ResponseEntity.ok(pagoService.buscarPorTutorYEstado(idTutor, estado));
+    }
+
+@GetMapping("/reporte/por-metodo")
+    @Operation(summary = "Reporte: cantidad y monto recaudado por método de pago")
+    public ResponseEntity<List<MontoPorMetodoDTO>> reportePorMetodo() {
+        return ResponseEntity.ok(pagoService.reportePorMetodo());
+    }
+
+    @GetMapping("/reporte/por-mes")
+    @Operation(summary = "Reporte: cantidad y monto recaudado por mes en un año")
+    public ResponseEntity<List<MontoPorMesDTO>> reportePorMes(@RequestParam int anio) {
+        return ResponseEntity.ok(pagoService.reportePorMes(anio));
     }
 }

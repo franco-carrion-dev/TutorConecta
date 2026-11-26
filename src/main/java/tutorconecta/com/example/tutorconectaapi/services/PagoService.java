@@ -1,5 +1,8 @@
 package tutorconecta.com.example.tutorconectaapi.services;
 
+import tutorconecta.com.example.tutorconectaapi.dtos.MontoPorMetodoDTO;
+import tutorconecta.com.example.tutorconectaapi.dtos.MontoPorMesDTO;
+
 import tutorconecta.com.example.tutorconectaapi.dtos.PagoRequestDTO;
 import tutorconecta.com.example.tutorconectaapi.dtos.PagoResponseDTO;
 
@@ -20,4 +23,6 @@ public interface PagoService {
 
     List<PagoResponseDTO> buscarPorTutorYEstado(Long idTutor, String estado);
 
+List<MontoPorMetodoDTO> reportePorMetodo();
+    List<MontoPorMesDTO> reportePorMes(int anio);
 }

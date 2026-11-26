@@ -1,5 +1,9 @@
 package tutorconecta.com.example.tutorconectaapi.services;
 
+import java.math.BigDecimal;
+import tutorconecta.com.example.tutorconectaapi.dtos.MontoPorMetodoDTO;
+import tutorconecta.com.example.tutorconectaapi.dtos.MontoPorMesDTO;
+
 import tutorconecta.com.example.tutorconectaapi.components.EntityMapper;
 import tutorconecta.com.example.tutorconectaapi.dtos.PagoRequestDTO;
 import tutorconecta.com.example.tutorconectaapi.dtos.PagoResponseDTO;
@@ -69,6 +73,20 @@ public class PagoServiceImpl implements PagoService {
     public List<PagoResponseDTO> buscarPorTutorYEstado(Long idTutor, String estado) {
         return repository.findPagosByTutorAndEstado(idTutor, estado).stream()
                 .map(mapper::toPagoResponseDTO)
+                .toList();
+    }
+
+@Override
+    public List<MontoPorMetodoDTO> reportePorMetodo() {
+        return repository.montoPorMetodoPago().stream()
+                .map(f -> new MontoPorMetodoDTO((String) f[0], ((Number) f[1]).longValue(), new BigDecimal(f[2].toString())))
+                .toList();
+    }
+
+    @Override
+    public List<MontoPorMesDTO> reportePorMes(int anio) {
+        return repository.montoPorMes(anio).stream()
+                .map(f -> new MontoPorMesDTO(((Number) f[0]).intValue(), ((Number) f[1]).longValue(), new BigDecimal(f[2].toString())))
                 .toList();
     }
 }
