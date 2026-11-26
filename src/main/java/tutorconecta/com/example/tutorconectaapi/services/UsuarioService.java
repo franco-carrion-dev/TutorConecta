@@ -1,5 +1,7 @@
 package tutorconecta.com.example.tutorconectaapi.services;
 
+import tutorconecta.com.example.tutorconectaapi.dtos.UsuariosPorMesDTO;
+
 import tutorconecta.com.example.tutorconectaapi.dtos.UsuarioRequestDTO;
 import tutorconecta.com.example.tutorconectaapi.dtos.UsuarioResponseDTO;
 import tutorconecta.com.example.tutorconectaapi.entities.Usuario;
@@ -20,4 +22,6 @@ public interface UsuarioService {
 
     List<UsuarioResponseDTO> buscarTutorPorNombre(String nombre);
 
+List<UsuariosPorMesDTO> reporteRegistrosPorMes(int anio);
+    List<UsuarioResponseDTO> listarPorActivo(Boolean activo);
 }

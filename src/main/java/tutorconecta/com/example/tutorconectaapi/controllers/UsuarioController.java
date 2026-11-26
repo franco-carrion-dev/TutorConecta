@@ -1,5 +1,10 @@
 package tutorconecta.com.example.tutorconectaapi.controllers;
 
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
+import tutorconecta.com.example.tutorconectaapi.dtos.UsuariosPorMesDTO;
+
 import io.swagger.v3.oas.annotations.Operation;
 import tutorconecta.com.example.tutorconectaapi.dtos.UsuarioRequestDTO;
 import tutorconecta.com.example.tutorconectaapi.dtos.UsuarioResponseDTO;
@@ -93,5 +98,17 @@ public class UsuarioController {
         } catch (EntityNotFoundException exception) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+@GetMapping("/reporte/registros-por-mes")
+    @Operation(summary = "Reporte: cantidad de usuarios registrados por mes en un año")
+    public ResponseEntity<List<UsuariosPorMesDTO>> reporteRegistrosPorMes(@RequestParam int anio) {
+        return ResponseEntity.ok(usuarioService.reporteRegistrosPorMes(anio));
+    }
+
+    @GetMapping("/activo/{activo}")
+    @Operation(summary = "Listar usuarios activos (true) o inactivos (false)")
+    public ResponseEntity<List<UsuarioResponseDTO>> listarPorActivo(@PathVariable Boolean activo) {
+        return ResponseEntity.ok(usuarioService.listarPorActivo(activo));
     }
 }

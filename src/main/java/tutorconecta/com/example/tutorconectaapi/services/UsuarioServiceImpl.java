@@ -1,5 +1,7 @@
 package tutorconecta.com.example.tutorconectaapi.services;
 
+import tutorconecta.com.example.tutorconectaapi.dtos.UsuariosPorMesDTO;
+
 import tutorconecta.com.example.tutorconectaapi.components.EntityMapper;
 import tutorconecta.com.example.tutorconectaapi.dtos.UsuarioRequestDTO;
 import tutorconecta.com.example.tutorconectaapi.dtos.UsuarioResponseDTO;
@@ -117,4 +119,17 @@ public class UsuarioServiceImpl implements UsuarioService {
                 .toList();
     }
 
+@Override
+    public List<UsuariosPorMesDTO> reporteRegistrosPorMes(int anio) {
+        return usuarioRepository.contarRegistrosPorMes(anio).stream()
+                .map(f -> new UsuariosPorMesDTO(((Number) f[0]).intValue(), ((Number) f[1]).longValue()))
+                .toList();
+    }
+
+    @Override
+    public List<UsuarioResponseDTO> listarPorActivo(Boolean activo) {
+        return usuarioRepository.findByActivoOrderByFechaRegistroDesc(activo).stream()
+                .map(entityMapper::toUsuarioResponseDTO)
+                .toList();
+    }
 }
