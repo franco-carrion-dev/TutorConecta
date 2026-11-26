@@ -1,5 +1,9 @@
 package tutorconecta.com.example.tutorconectaapi.services;
 
+import java.math.BigDecimal;
+import tutorconecta.com.example.tutorconectaapi.dtos.HorasPorDiaDTO;
+import tutorconecta.com.example.tutorconectaapi.dtos.HorasPorTutorDTO;
+
 import tutorconecta.com.example.tutorconectaapi.components.EntityMapper;
 import tutorconecta.com.example.tutorconectaapi.dtos.DisponibilidadHorariaRequestDTO;
 import tutorconecta.com.example.tutorconectaapi.dtos.DisponibilidadHorariaResponseDTO;
@@ -61,5 +65,19 @@ public class DisponibilidadHorariaServiceImpl implements DisponibilidadHorariaSe
     @Override
     public List<DisponibilidadHoraria> findByDiaSemana(String diaSemana) {
         return repository.findByDiaSemana(diaSemana);
+    }
+
+@Override
+    public List<HorasPorDiaDTO> reporteHorasPorDia() {
+        return repository.horasDisponiblesPorDia().stream()
+                .map(f -> new HorasPorDiaDTO((String) f[0], ((Number) f[1]).longValue(), new BigDecimal(f[2].toString())))
+                .toList();
+    }
+
+    @Override
+    public List<HorasPorTutorDTO> reporteHorasPorTutor() {
+        return repository.horasDisponiblesPorTutor().stream()
+                .map(f -> new HorasPorTutorDTO(((Number) f[0]).longValue(), (String) f[1], ((Number) f[2]).longValue(), new BigDecimal(f[3].toString())))
+                .toList();
     }
 }

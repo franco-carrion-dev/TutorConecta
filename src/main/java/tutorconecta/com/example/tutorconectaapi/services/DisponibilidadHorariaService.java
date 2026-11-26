@@ -1,5 +1,8 @@
 package tutorconecta.com.example.tutorconectaapi.services;
 
+import tutorconecta.com.example.tutorconectaapi.dtos.HorasPorDiaDTO;
+import tutorconecta.com.example.tutorconectaapi.dtos.HorasPorTutorDTO;
+
 import org.springframework.data.repository.query.Param;
 import tutorconecta.com.example.tutorconectaapi.dtos.DisponibilidadHorariaRequestDTO;
 import tutorconecta.com.example.tutorconectaapi.dtos.DisponibilidadHorariaResponseDTO;
@@ -22,4 +25,7 @@ public interface DisponibilidadHorariaService {
     List<DisponibilidadHoraria> findDisponibilidadByTutorId(Long id);
 
     List<DisponibilidadHoraria> findByDiaSemana(String diaSemana);
+
+List<HorasPorDiaDTO> reporteHorasPorDia();
+    List<HorasPorTutorDTO> reporteHorasPorTutor();
 }

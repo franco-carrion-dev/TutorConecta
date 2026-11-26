@@ -1,5 +1,9 @@
 package tutorconecta.com.example.tutorconectaapi.controllers;
 
+import org.springframework.web.bind.annotation.GetMapping;
+import tutorconecta.com.example.tutorconectaapi.dtos.HorasPorDiaDTO;
+import tutorconecta.com.example.tutorconectaapi.dtos.HorasPorTutorDTO;
+
 import tutorconecta.com.example.tutorconectaapi.dtos.DisponibilidadHorariaRequestDTO;
 import tutorconecta.com.example.tutorconectaapi.dtos.DisponibilidadHorariaResponseDTO;
 import tutorconecta.com.example.tutorconectaapi.components.EntityMapper;
@@ -94,5 +98,17 @@ public class DisponibilidadHorariaController {
         } catch (EntityNotFoundException exception) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+@GetMapping("/reporte/horas-por-dia")
+    @Operation(summary = "Reporte: horas disponibles por día de la semana")
+    public ResponseEntity<List<HorasPorDiaDTO>> reporteHorasPorDia() {
+        return ResponseEntity.ok(disponibilidadHorariaService.reporteHorasPorDia());
+    }
+
+    @GetMapping("/reporte/horas-por-tutor")
+    @Operation(summary = "Reporte: horas disponibles a la semana por tutor")
+    public ResponseEntity<List<HorasPorTutorDTO>> reporteHorasPorTutor() {
+        return ResponseEntity.ok(disponibilidadHorariaService.reporteHorasPorTutor());
     }
 }
