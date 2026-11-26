@@ -1,5 +1,9 @@
 package tutorconecta.com.example.tutorconectaapi.services;
 
+import java.math.BigDecimal;
+import tutorconecta.com.example.tutorconectaapi.dtos.PromedioTutorDTO;
+import tutorconecta.com.example.tutorconectaapi.dtos.CalificacionesPorPuntuacionDTO;
+
 import tutorconecta.com.example.tutorconectaapi.components.EntityMapper;
 import tutorconecta.com.example.tutorconectaapi.dtos.CalificacionRequestDTO;
 import tutorconecta.com.example.tutorconectaapi.dtos.CalificacionResponseDTO;
@@ -49,5 +53,19 @@ public class CalificacionServiceImpl implements CalificacionService {
         Calificacion calificacion = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("No existe una calificacion con ID: " + id));
         repository.delete(calificacion);
+    }
+
+@Override
+    public List<PromedioTutorDTO> reportePromedioPorTutor() {
+        return repository.promedioPorTutor().stream()
+                .map(f -> new PromedioTutorDTO(((Number) f[0]).longValue(), (String) f[1], ((Number) f[2]).longValue(), new BigDecimal(f[3].toString())))
+                .toList();
+    }
+
+    @Override
+    public List<CalificacionesPorPuntuacionDTO> reportePorPuntuacion() {
+        return repository.contarPorPuntuacion().stream()
+                .map(f -> new CalificacionesPorPuntuacionDTO(((Number) f[0]).intValue(), ((Number) f[1]).longValue()))
+                .toList();
     }
 }

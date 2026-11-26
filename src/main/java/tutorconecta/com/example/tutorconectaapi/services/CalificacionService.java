@@ -1,5 +1,8 @@
 package tutorconecta.com.example.tutorconectaapi.services;
 
+import tutorconecta.com.example.tutorconectaapi.dtos.PromedioTutorDTO;
+import tutorconecta.com.example.tutorconectaapi.dtos.CalificacionesPorPuntuacionDTO;
+
 import tutorconecta.com.example.tutorconectaapi.dtos.CalificacionRequestDTO;
 import tutorconecta.com.example.tutorconectaapi.dtos.CalificacionResponseDTO;
 
@@ -16,4 +19,7 @@ public interface CalificacionService {
     CalificacionResponseDTO actualizar(Long id, CalificacionRequestDTO request);
 
     void eliminar(Long id);
+
+List<PromedioTutorDTO> reportePromedioPorTutor();
+    List<CalificacionesPorPuntuacionDTO> reportePorPuntuacion();
 }

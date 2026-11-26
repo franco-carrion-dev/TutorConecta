@@ -1,5 +1,9 @@
 package tutorconecta.com.example.tutorconectaapi.controllers;
 
+import org.springframework.web.bind.annotation.GetMapping;
+import tutorconecta.com.example.tutorconectaapi.dtos.PromedioTutorDTO;
+import tutorconecta.com.example.tutorconectaapi.dtos.CalificacionesPorPuntuacionDTO;
+
 import tutorconecta.com.example.tutorconectaapi.dtos.CalificacionRequestDTO;
 import tutorconecta.com.example.tutorconectaapi.dtos.CalificacionResponseDTO;
 import tutorconecta.com.example.tutorconectaapi.services.CalificacionService;
@@ -67,5 +71,17 @@ public class CalificacionController {
         } catch (EntityNotFoundException exception) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+@GetMapping("/reporte/promedio-por-tutor")
+    @Operation(summary = "Reporte: promedio de calificación por tutor")
+    public ResponseEntity<List<PromedioTutorDTO>> reportePromedioPorTutor() {
+        return ResponseEntity.ok(calificacionService.reportePromedioPorTutor());
+    }
+
+    @GetMapping("/reporte/por-puntuacion")
+    @Operation(summary = "Reporte: cantidad de calificaciones por puntuación (1 a 5)")
+    public ResponseEntity<List<CalificacionesPorPuntuacionDTO>> reportePorPuntuacion() {
+        return ResponseEntity.ok(calificacionService.reportePorPuntuacion());
     }
 }
