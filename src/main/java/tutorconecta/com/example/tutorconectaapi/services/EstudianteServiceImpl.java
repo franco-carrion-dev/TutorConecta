@@ -1,5 +1,8 @@
 package tutorconecta.com.example.tutorconectaapi.services;
 
+import java.math.BigDecimal;
+import tutorconecta.com.example.tutorconectaapi.dtos.GastoEstudianteDTO;
+
 import tutorconecta.com.example.tutorconectaapi.components.EntityMapper;
 import tutorconecta.com.example.tutorconectaapi.dtos.EstudianteRequestDTO;
 import tutorconecta.com.example.tutorconectaapi.dtos.EstudianteResponseDTO;
@@ -64,5 +67,19 @@ public class EstudianteServiceImpl implements EstudianteService {
         Estudiante estudiante = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("No existe un estudiante con ID: " + id));
         repository.delete(estudiante);
+    }
+
+@Override
+    public List<GastoEstudianteDTO> reporteGastos() {
+        return repository.gastoPorEstudiante().stream()
+                .map(f -> new GastoEstudianteDTO(((Number) f[0]).longValue(), (String) f[1], ((Number) f[2]).longValue(), new BigDecimal(f[3].toString())))
+                .toList();
+    }
+
+    @Override
+    public List<EstudianteResponseDTO> buscarPorPresupuestoMinimo(BigDecimal monto) {
+        return repository.findByPresupuestoMaximoGreaterThanEqualOrderByPresupuestoMaximoDesc(monto).stream()
+                .map(mapper::toEstudianteResponseDTO)
+                .toList();
     }
 }

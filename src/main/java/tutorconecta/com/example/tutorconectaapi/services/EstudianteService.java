@@ -1,5 +1,8 @@
 package tutorconecta.com.example.tutorconectaapi.services;
 
+import java.math.BigDecimal;
+import tutorconecta.com.example.tutorconectaapi.dtos.GastoEstudianteDTO;
+
 import tutorconecta.com.example.tutorconectaapi.dtos.EstudianteRequestDTO;
 import tutorconecta.com.example.tutorconectaapi.dtos.EstudianteResponseDTO;
 
@@ -16,4 +19,7 @@ public interface EstudianteService {
     EstudianteResponseDTO actualizar(Long id, EstudianteRequestDTO request);
 
     void eliminar(Long id);
+
+List<GastoEstudianteDTO> reporteGastos();
+    List<EstudianteResponseDTO> buscarPorPresupuestoMinimo(BigDecimal monto);
 }
